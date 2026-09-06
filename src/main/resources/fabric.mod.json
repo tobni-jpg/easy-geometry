@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "easygeometry",
+	"version": "${version}",
+	"name": "Easy Geometry",
+	"description": "Placeholder overlay for geometric shapes (sphere, cylinder, cone, torus) centered on the player. Pick a shape and size, see the ghost outline in the world. No blocks are placed.",
+	"authors": [
+		"tobni-jpg"
+	],
+	"contact": {
+		"sources": "https://github.com/tobni-jpg/easy-geometry"
+	},
+	"license": "MIT",
+	"icon": "assets/easygeometry/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"com.example.easygeometry.EasyGeometryClient"
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

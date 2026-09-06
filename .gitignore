@@ -1,0 +1,5 @@
+build/
+.gradle/
+*.zip
+*.jar
+!build/libs/*.jar
