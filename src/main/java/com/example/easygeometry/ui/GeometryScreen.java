@@ -114,7 +114,7 @@ public class GeometryScreen extends Screen {
         state.setOverlayEnabled(overlayEnabled);
 
         // snap the ghost to the player's current position when enabling the preview
-        if (showPreview) {
+        if (overlayEnabled) {
             state.setAnchorToPlayer();
         }
 

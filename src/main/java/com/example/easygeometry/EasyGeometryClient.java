@@ -56,7 +56,7 @@ public class EasyGeometryClient implements ClientModInitializer {
         });
 
         // draw the ghost overlay in the GIZMOS phase of the level renderer
-        LevelRenderEvents.BEFORE_GIZMOS.register(ctx -> ShapeOverlayRenderer.render());
+        LevelRenderEvents.BEFORE_GIZMOS.register(ctx -> ShapeOverlayRenderer.render(ctx));
     }
 
     public Geometry.ShapeType getShapeType() {
