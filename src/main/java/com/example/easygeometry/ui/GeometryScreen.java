@@ -113,6 +113,11 @@ public class GeometryScreen extends Screen {
         state.setRadius(config.radius);
         state.setOverlayEnabled(overlayEnabled);
 
+        // snap the ghost to the player's current position when enabling the preview
+        if (showPreview) {
+            state.setAnchorToPlayer();
+        }
+
         this.minecraft.setScreenAndShow(this.parent);
     }
 

@@ -29,7 +29,8 @@ public final class ShapeOverlayRenderer {
             return;
         }
 
-        BlockPos center = mc.player.blockPosition();
+        // use the fixed anchor if set, otherwise fall back to the player position
+        BlockPos center = state.getAnchor() != null ? state.getAnchor() : mc.player.blockPosition();
         Geometry.ShapeType type = state.getShapeType();
         int radius = state.getRadius();
 

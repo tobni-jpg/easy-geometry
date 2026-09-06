@@ -11,10 +11,12 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 
 /**
  * Client entrypoint. Registers the overlay keybind, the world-render hook and
- * holds the current mod state (shape, radius, overlay enabled).
+ * holds the current mod state (shape, radius, overlay enabled) plus the fixed
+ * anchor position the shape is drawn around.
  */
 public class EasyGeometryClient implements ClientModInitializer {
 
@@ -28,6 +30,7 @@ public class EasyGeometryClient implements ClientModInitializer {
     private Geometry.ShapeType shapeType = Geometry.ShapeType.SPHERE;
     private int radius = EasyConfig.DEFAULT_RADIUS;
     private boolean overlayEnabled = false;
+    private BlockPos anchor = null;
 
     public static EasyGeometryClient getInstance() {
         return INSTANCE;
@@ -78,5 +81,16 @@ public class EasyGeometryClient implements ClientModInitializer {
 
     public void setOverlayEnabled(boolean overlayEnabled) {
         this.overlayEnabled = overlayEnabled;
+    }
+
+    /** The fixed position the shape is drawn around (set once when preview is enabled). */
+    public BlockPos getAnchor() {
+        return anchor;
+    }
+
+    /** Snaps the anchor to the player's current position. */
+    public void setAnchorToPlayer() {
+        Minecraft mc = Minecraft.getInstance();
+        this.anchor = (mc.player != null) ? mc.player.blockPosition() : null;
     }
 }

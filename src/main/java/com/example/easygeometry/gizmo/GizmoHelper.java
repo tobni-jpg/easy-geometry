@@ -16,22 +16,26 @@ public final class GizmoHelper {
     public static final int COLOR_GREEN = 0xD000FF00;
     public static final int COLOR_RED = 0xD0FF3333;
 
+    /** Fill color for ghost blocks (translucent green, low alpha so terrain shows through). */
+    public static final int FILL_GREEN = 0x3D00FF00;
+    public static final int FILL_RED = 0x3DFF3333;
+
     private GizmoHelper() {
     }
 
-    /** Draws a single block-sized ghost outline at the given position. */
+    /** Draws a single block-sized solid translucent ghost block at the given position. */
     public static void block(BlockPos pos) {
-        Gizmos.cuboid(pos, GizmoStyle.stroke(COLOR_GREEN, 0.03f));
+        Gizmos.cuboid(pos, GizmoStyle.fill(FILL_GREEN));
     }
 
-    /** Draws an axis-aligned bounding box as a ghost outline. */
+    /** Draws an axis-aligned bounding box as a ghost block volume. */
     public static void cuboid(AABB box) {
-        Gizmos.cuboid(box, GizmoStyle.stroke(COLOR_GREEN, 0.03f));
+        Gizmos.cuboid(box, GizmoStyle.fill(FILL_GREEN));
     }
 
     /** Draws an axis-aligned box with a custom style. */
     public static void cuboid(AABB box, int color, float width) {
-        Gizmos.cuboid(box, GizmoStyle.stroke(color, width));
+        Gizmos.cuboid(box, GizmoStyle.strokeAndFill(color, width, color));
     }
 
     /** Draws a line segment. */
