@@ -34,10 +34,17 @@ public final class ShapeOverlayRenderer {
         Geometry.ShapeType type = state.getShapeType();
         int radius = state.getRadius();
 
-        switch (type) {
-            case SPHERE -> renderSphere(center, radius);
-            case CYLINDER, CONE -> renderCuboidShell(center, type, radius);
-            case TORUS -> renderTorus(center, radius);
+        // Draw into the per-frame render-thread gizmo collector. This sets the
+        // ThreadLocal collector that Gizmos.* helpers write to, so the shapes
+        // actually appear at their world coords. Without this wrapper the helpers
+        // write into no collector and nothing is visible.
+        try (net.minecraft.gizmos.Gizmos.TemporaryCollection ignored =
+                     mc.levelRenderer.collectPerFrameRenderThreadGizmos()) {
+            switch (type) {
+                case SPHERE -> renderSphere(center, radius);
+                case CYLINDER, CONE -> renderCuboidShell(center, type, radius);
+                case TORUS -> renderTorus(center, radius);
+            }
         }
     }
 
