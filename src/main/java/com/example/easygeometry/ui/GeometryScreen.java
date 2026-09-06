@@ -19,6 +19,7 @@ public class GeometryScreen extends Screen {
     private final Screen parent;
     private EasyConfig config;
     private AbstractSliderButton radiusSlider;
+    private AbstractSliderButton heightSlider;
     private boolean overlayEnabled;
     private Geometry.ShapeType shapeType;
 
@@ -64,22 +65,38 @@ public class GeometryScreen extends Screen {
             }
         };
 
+        // Height slider (used for cylinder/cone)
+        this.heightSlider = new AbstractSliderButton(left, y + 60, panelW, 20,
+                Component.literal("Height: " + config.height),
+                toHeightSliderValue(config.height)) {
+            @Override
+            protected void updateMessage() {
+                setMessage(Component.literal("Height: " + toHeight(this.value)));
+            }
+
+            @Override
+            protected void applyValue() {
+                config.height = toHeight(this.value);
+            }
+        };
+
         // Overlay toggle button
         Button toggleButton = Button.builder(overlayComponent(), btn -> {
             overlayEnabled = !overlayEnabled;
             btn.setMessage(overlayComponent());
-        }).bounds(left, y + 60, panelW, 20).build();
+        }).bounds(left, y + 90, panelW, 20).build();
 
         // Show preview button
         Button showButton = Button.builder(Component.literal("Show Preview"),
                         btn -> finish(true))
-                .bounds(left, y + 90, panelW, 20).build();
+                .bounds(left, y + 120, panelW, 20).build();
         Button closeButton = Button.builder(Component.literal("Close"),
                         btn -> finish(false))
-                .bounds(left, y + 115, panelW, 20).build();
+                .bounds(left, y + 145, panelW, 20).build();
 
         this.addRenderableWidget(shapeButton);
         this.addRenderableWidget(this.radiusSlider);
+        this.addRenderableWidget(this.heightSlider);
         this.addRenderableWidget(toggleButton);
         this.addRenderableWidget(showButton);
         this.addRenderableWidget(closeButton);
@@ -100,6 +117,17 @@ public class GeometryScreen extends Screen {
         return (double) (radius - EasyConfig.MIN_RADIUS) / span;
     }
 
+    private static int toHeight(double sliderValue) {
+        double v = Math.max(0, Math.min(1, sliderValue));
+        return (int) Math.round(EasyConfig.MIN_HEIGHT
+                + v * (EasyConfig.MAX_HEIGHT - EasyConfig.MIN_HEIGHT));
+    }
+
+    private static double toHeightSliderValue(int height) {
+        int span = EasyConfig.MAX_HEIGHT - EasyConfig.MIN_HEIGHT;
+        return (double) (height - EasyConfig.MIN_HEIGHT) / span;
+    }
+
     private void finish(boolean showPreview) {
         if (showPreview) {
             overlayEnabled = true;
@@ -111,6 +139,7 @@ public class GeometryScreen extends Screen {
         EasyGeometryClient state = EasyGeometryClient.getInstance();
         state.setShapeType(shapeType);
         state.setRadius(config.radius);
+        state.setHeight(config.height);
         state.setOverlayEnabled(overlayEnabled);
 
         // snap the ghost to the player's current position when enabling the preview
@@ -133,7 +162,7 @@ public class GeometryScreen extends Screen {
         int panelW = Math.min(320, this.width - 40);
         int centerX = this.width / 2;
         gui.fill(0, 0, this.width, this.height, 0xC8000000);
-        gui.fill(centerX - panelW / 2 - 8, 28, centerX + panelW / 2 + 8, 150, 0xD0101010);
+        gui.fill(centerX - panelW / 2 - 8, 28, centerX + panelW / 2 + 8, 205, 0xD0101010);
 
         // widgets
         super.extractRenderState(gui, mouseX, mouseY, partialTick);

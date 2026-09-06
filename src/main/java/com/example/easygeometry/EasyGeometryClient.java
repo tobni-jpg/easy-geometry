@@ -29,6 +29,7 @@ public class EasyGeometryClient implements ClientModInitializer {
 
     private Geometry.ShapeType shapeType = Geometry.ShapeType.SPHERE;
     private int radius = EasyConfig.DEFAULT_RADIUS;
+    private int height = EasyConfig.DEFAULT_HEIGHT;
     private boolean overlayEnabled = false;
     private BlockPos anchor = null;
 
@@ -44,6 +45,7 @@ public class EasyGeometryClient implements ClientModInitializer {
         EasyConfig cfg = EasyConfig.load();
         this.shapeType = cfg.shapeType;
         this.radius = cfg.radius;
+        this.height = cfg.height;
         this.overlayEnabled = false; // preview starts off until user enables it
 
         // register keybind to open the settings screen
@@ -73,6 +75,14 @@ public class EasyGeometryClient implements ClientModInitializer {
 
     public void setRadius(int radius) {
         this.radius = radius;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public boolean isOverlayEnabled() {

@@ -7,8 +7,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gizmos.SimpleGizmoCollector;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -40,6 +38,7 @@ public final class ShapeOverlayRenderer {
         BlockPos center = state.getAnchor() != null ? state.getAnchor() : mc.player.blockPosition();
         Geometry.ShapeType type = state.getShapeType();
         int radius = state.getRadius();
+        int height = state.getHeight();
 
         // Build all gizmos into a local collector, then hand them to the renderer
         // in one shot. This avoids ThreadLocal collector issues entirely.
@@ -50,11 +49,7 @@ public final class ShapeOverlayRenderer {
         net.minecraft.gizmos.Gizmos.TemporaryCollection tmp =
                 net.minecraft.gizmos.Gizmos.withCollector(collector);
         try {
-            switch (type) {
-                case SPHERE -> renderSphere(center, radius);
-                case CYLINDER, CONE -> renderCuboidShell(center, type, radius);
-                case TORUS -> renderTorus(center, radius);
-            }
+            renderShell(center, type, radius, height);
         } finally {
             tmp.close(); // resets ThreadLocal, our gizmos are now in collector
         }
@@ -66,38 +61,13 @@ public final class ShapeOverlayRenderer {
         }
     }
 
-    private static void renderCuboidShell(BlockPos center, Geometry.ShapeType type, int radius) {
-        List<BlockPos.MutableBlockPos> positions = Geometry.shellPositions(type, center, radius);
+    /** Renders every shape as a shell of filled translucent ghost blocks. */
+    private static void renderShell(BlockPos center, Geometry.ShapeType type, int radius, int height) {
+        List<BlockPos.MutableBlockPos> positions = Geometry.shellPositions(type, center, radius, height);
         int limit = 60000;
         int n = Math.min(positions.size(), limit);
         for (int i = 0; i < n; i++) {
             GizmoHelper.block(positions.get(i));
-        }
-    }
-
-    private static void renderSphere(BlockPos center, int radius) {
-        AABB box = new AABB(
-                new Vec3(center.getX() - radius, center.getY() - radius, center.getZ() - radius),
-                new Vec3(center.getX() + radius, center.getY() + radius, center.getZ() + radius));
-        GizmoHelper.cuboid(box);
-    }
-
-    private static void renderTorus(BlockPos center, int radius) {
-        int segments = Math.max(24, radius * 4);
-        double prevX = 0, prevZ = 0;
-        boolean first = true;
-        Vec3 c = new Vec3(center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5);
-        for (int i = 0; i <= segments; i++) {
-            double a = (Math.PI * 2 * i) / segments;
-            double x = radius * Math.cos(a);
-            double z = radius * Math.sin(a);
-            if (!first) {
-                GizmoHelper.line(c.add(prevX, 0, prevZ), c.add(x, 0, z),
-                        GizmoHelper.FILL_GREEN, 0.03f);
-            }
-            prevX = x;
-            prevZ = z;
-            first = false;
         }
     }
 }

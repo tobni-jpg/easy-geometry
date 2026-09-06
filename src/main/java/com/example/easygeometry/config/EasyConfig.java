@@ -19,8 +19,13 @@ public final class EasyConfig {
     public static final int MAX_RADIUS = 64;
     public static final int DEFAULT_RADIUS = 8;
 
+    public static final int MIN_HEIGHT = 1;
+    public static final int MAX_HEIGHT = 128;
+    public static final int DEFAULT_HEIGHT = 8;
+
     public Geometry.ShapeType shapeType = Geometry.ShapeType.SPHERE;
     public int radius = DEFAULT_RADIUS;
+    public int height = DEFAULT_HEIGHT;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -38,6 +43,7 @@ public final class EasyConfig {
                         cfg.shapeType = Geometry.ShapeType.SPHERE;
                     }
                     cfg.radius = Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, cfg.radius));
+                    cfg.height = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, cfg.height));
                     return cfg;
                 }
             } catch (IOException e) {
